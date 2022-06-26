@@ -81,22 +81,22 @@ function ValidatePhoto(fileInputId, maximumKB, requiredHeight, requiredWidth){
             image.src = e.target.result;
            
             image.onload = function () {  
-                if (this.width != requiredWidth) {
-                    $.sweetModal({
-                        content: title + " width invalid. Width must be " + requiredWidth + " pixel.",
-                        icon: $.sweetModal.ICON_WARNING
-                    });
-                   // showPhotoError('Invalid photo width. Width must be 300 pixel.');
-                   return false;
-                }                 
-                if (this.height != requiredHeight) {
-                    $.sweetModal({
-                        content: title + " height invalid. Height must be "+ requiredHeight  + " pixel.",
-                        icon: $.sweetModal.ICON_WARNING
-                    });
-                    //showPhotoError('Invalid photo height. Height must be 300 pixel.');
-                    return false;
-                }
+                // if (this.width != requiredWidth) {
+                //     $.sweetModal({
+                //         content: title + " width invalid. Width must be " + requiredWidth + " pixel.",
+                //         icon: $.sweetModal.ICON_WARNING
+                //     });
+                //    // showPhotoError('Invalid photo width. Width must be 300 pixel.');
+                //    return false;
+                // }                 
+                // if (this.height != requiredHeight) {
+                //     $.sweetModal({
+                //         content: title + " height invalid. Height must be "+ requiredHeight  + " pixel.",
+                //         icon: $.sweetModal.ICON_WARNING
+                //     });
+                //     //showPhotoError('Invalid photo height. Height must be 300 pixel.');
+                //     return false;
+                // }
             };
         }
     }
