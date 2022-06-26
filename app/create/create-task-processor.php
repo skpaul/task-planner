@@ -67,6 +67,7 @@
         $updatedData["imageName"] =  $id . '.jpg';
         
         $id = $db->insert("tasks", $updatedData);
+        $sql = "UPDATE tasks set imageName = '$id.jpg' where taskId=$id";
 
         Imaging::validate("ApplicantPhoto", "Applicant Photo" ,0,0,100);
 
