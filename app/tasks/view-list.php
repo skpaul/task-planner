@@ -116,7 +116,8 @@
                             foreach ($tasks as $task) {
                         ?>
                             <div class="card">
-                                <?=$task->title?>
+                                <h2><?=$task->title?></h2>
+                                <p><?=$task->description?></p>
                                 <img src="<?=BASE_URL?>/screenshots/<?=$task->imageName?>" alt="" srcset="">
                             </div><!-- card/ -->
                         <?php
