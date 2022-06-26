@@ -8,7 +8,7 @@
         Required::Logger()->Cryptographer()
             ->Database()
             ->JSON()
-            ->Clock()->headerBrand()->applicantHeaderNav()->footer();
+            ->Clock();
     #endregion
 
 	#region Library instance declaration & initialization
@@ -22,50 +22,16 @@
         $db->connect();
         $db->fetchAsObject();
 	#endregion
-
-    $sql = "SELECT configId, title, circularFileName, applicationStartDatetime, applicationEndDatetime 
-                FROM `post_configurations` 
-                WHERE isActive = 1 AND court='". COURT ."' AND applicationType = '". APPLICATION_TYPE ."' 
-                ORDER BY configId ASC";
-                
-    $postConfigs = $db->selectMany($sql);
-
-    $sql = "SELECT * FROM `notice_boards` 
-            WHERE isActive = 1 AND court='". COURT ."' AND applicationType = '". APPLICATION_TYPE ."' 
-            ORDER BY noticeId DESC";
-    $notices = $db->selectMany($sql);
-
-    $pageTitle = "Pupilage Registration";
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?=$pageTitle?> - <?= ORGANIZATION_FULL_NAME ?></title>
+        <title><?= ORGANIZATION_FULL_NAME ?></title>
         <?php
-            Required::gtag()->html5shiv()->metaTags()->favicon()->omnicss()->sweetModalCSS();
+            Required::html5shiv()->omnicss()->sweetModalCSS();
         ?>
-
-        <style>
-            /* .notice-board {
-                display: flex;
-                flex-direction: row;
-                margin-bottom: 41px;
-            }
-
-            .notice-board>.label {
-                margin-right: 32px;
-                font-weight: 600;
-                border: 1px solid #3d4e5e;
-                padding: 1px 5px;
-                border-radius: 5px;
-            }
-
-            #ticker a {
-                display: none;
-            } */
-        </style>
-
+      
         <style>
             body {
                 /* background-color: #F8F9FA; */
@@ -127,10 +93,7 @@
     <body>
         <div class="master-wrapper">
             <header>
-                <?php
-                    echo HeaderBrand::prepare(array("baseUrl"=>BASE_URL, "hambMenu"=>true));
-                    echo ApplicantHeaderNav::prepare(array("baseUrl"=>BASE_URL));
-                ?>
+               
             </header>
             <main>
                 <div class="container">
@@ -143,63 +106,20 @@
                     -->
 
                     <div class="content">
-                        <marquee class="mt150" id="marquee" behavior="" direction="left" scrollamount="5">
-                            <ul class="marquee-items">
-                                <?php
-                                if (count($notices) > 0) {
-                                    foreach ($notices as $notice) {
-                                        if (isset($notice->noticeFileName) && !empty($notice->noticeFileName)) {
-                                            $fileUrl = BASE_URL . "/notice-board/notice-files/" . $notice->noticeFileName;
-                                            $div = <<<HTML
-                                                <li><a href="$fileUrl" target="_blank">$notice->title</a></li>
-                                                
-                                            HTML;
-                                        } else {
-                                            $div = <<<HTML
-                                                <li>$notice->title</li>
-                                            HTML;
-                                        }
-                                        echo $div;
-                                    }
-                                }
-                                ?>
-                            </ul>
-                        </marquee>
-
-                        <h1 class="page-title mt150 ta-center"><?= $pageTitle ?></h1>
-                        <h2 class="page-subtitle mt050 mb150 ta-center">Home</h2>
-
-                        <div class="ta-center">
-                            <?php
-                            if (count($postConfigs) == 0) {
-                                echo "No application.";
-                            }
-                            foreach ($postConfigs as $post) {
-                            ?>
-                                <div class="card ta-center fit-content pa300">
-                                    <h3 class="mb150"><?= "Pupilage Registration" ?></h3>
-                                    <div class="mb300">
-                                        <!-- <span class="fw600">Apply datetime: </span> -->
-                                        <?= "" //$clock->toString($post->applicationStartDatetime, DatetimeFormat::Custom("M d, Y h:i A")) ?> 
-                                            <!-- to -->
-                                        <?= "" // $clock->toString($post->applicationEndDatetime, DatetimeFormat::Custom("M d, Y h:i A")) ?>
-
-                                    </div>
-                                    <div>
-                                        <a class="fg-default btn outline " href="circular-files/<?= $post->circularFileName ?>" target="_blank">Download Circular</a>
-                                        <a class="fg-default btn" href="<?=BASE_URL?>/app/application/welcome.php?config-id=<?= $crypto->encrypt( $post->configId) ?>">Apply</a>
-                                    </div>
-
-                                    <!-- <br><br>
-                                    How to apply: Bangla Video Tutorial
-                                    <iframe width="100%" height="235" src="https://www.youtube.com/embed/ddJG6_VX2Ts" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+                       <div class="card">
+                            <form action="app/validate-login.php" method="post">
+                                <div class="field">
+                                    <label for="">Login Name</label>
+                                    <input type="text" name="loginName" class="validate" data-required="required">
                                 </div>
-                            <?php
-                            }
-                            ?>
-
-
-                        </div>
+                                <div class="field">
+                                    <label for="">Password</label>
+                                    <input type="password" name="loginPassword" class="validate" data-required="required">
+                                </div>
+                                
+                                <input type="submit" value="Submit">
+                            </form>
+                       </div>
                     </div><!-- .content -->
 
                     <!-- 
@@ -211,55 +131,16 @@
                 </div><!-- .container -->
             </main>
             <footer>
-                <?php
-                echo Footer::prepare(array());
-                ?>
+              
             </footer>
         </div>
         <?php
-            Required::jquery()->hamburgerMenu();
+            Required::jquery()->sweetModalJS()->swiftSubmit();
         ?>
         <script>
             var base_url = '<?php echo BASE_URL; ?>';
             $(function() {
-                $('#marquee').mouseover(function() {
-                    this.setAttribute('scrollamount', 0, 0);
-                    $(this).trigger('stop');
-                }).mouseout(function() {
-                    this.setAttribute('scrollamount', 5, 0);
-                    $(this).trigger('start');
-                });
-
-
-                function fades($div, cb) {
-                    $div.fadeIn(300, function() {
-                        myTimeout = setTimeout(function() {
-                            $div.fadeOut(400, function() {
-                                var $next = $div.next();
-                                if ($next.length > 0) {
-                                    fades($next, cb);
-                                } else {
-                                    // The last element has faded away, call the callback
-                                    cb();
-                                }
-                            }); //fadeout ends
-
-
-                        }, 2000); //setTimfeout ends
-                    });
-                }
-
-
-
-
-
-                function startFading($firstDiv) {
-                    fades($firstDiv, function() {
-                        startFading($firstDiv);
-                    });
-                }
-
-                startFading($(".a:first-child"));
+                $('form').swiftSubmit({}, null, null, null, null, null);
 
             }) //document.ready ends.
         </script>
