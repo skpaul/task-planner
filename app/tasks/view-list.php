@@ -117,6 +117,7 @@
                         ?>
                             <div class="card">
                                 <?=$task->title?>
+                                <img src="<?=BASE_URL?>/screenshots/<?=$task->imageName?>" alt="" srcset="">
                             </div><!-- card/ -->
                         <?php
                             }

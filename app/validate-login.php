@@ -50,7 +50,7 @@
         $session->startNew($developer->developerId);
         $session->setData("devId", $developer->developerId);
         $sessionId = $session->getSessionId();
-        $redirectUrl = BASE_URL . "/app/developer/tasks/view-list.php?session-id=" . $crypto->encrypt($sessionId);
+        $redirectUrl = BASE_URL . "/app/tasks/view-list.php?session-id=" . $crypto->encrypt($sessionId);
 
     exit($json->success()->redirecturl($redirectUrl)->create());
 ?>
