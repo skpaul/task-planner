@@ -64,10 +64,10 @@
         $updatedData["assignedTo"] = $_POST["assignedTo"];
         $updatedData["taskStatusId"] = 1;
         $updatedData["updatedDatetime"] =  $now;
-        $updatedData["imageName"] =  $id . '.jpg';
         
         $id = $db->insert("tasks", $updatedData);
         $sql = "UPDATE tasks set imageName = '$id.jpg' where taskId=$id";
+        $result = $db->update($sql);
 
         Imaging::validate("ApplicantPhoto", "Applicant Photo" ,0,0,100);
 
