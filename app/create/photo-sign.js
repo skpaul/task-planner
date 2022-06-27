@@ -18,7 +18,7 @@ function ValidatePhoto(fileInputId, maximumKB, requiredHeight, requiredWidth){
     var fileInput = $("#"+ fileInputId + "")[0];
     var selectedFile = fileInput.files[0];
     
-    var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpeg|.jpg)$/;
+    var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpeg|.jpg|.png)$/;
 
     var arrFileName = fileName.split("\\");
 
