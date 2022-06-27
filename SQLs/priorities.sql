@@ -11,7 +11,7 @@
  Target Server Version : 100417
  File Encoding         : 65001
 
- Date: 27/06/2022 01:11:48
+ Date: 27/06/2022 13:28:12
 */
 
 SET NAMES utf8mb4;
@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `priorities`;
 CREATE TABLE `priorities`  (
-  `priorityId` int NOT NULL DEFAULT 0,
+  `priorityId` int NOT NULL,
   `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   PRIMARY KEY (`priorityId`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
@@ -31,6 +31,10 @@ CREATE TABLE `priorities`  (
 -- Records of priorities
 -- ----------------------------
 INSERT INTO `priorities` VALUES (0, '');
-INSERT INTO `priorities` VALUES (1, 'Top');
+INSERT INTO `priorities` VALUES (1, '*****');
+INSERT INTO `priorities` VALUES (2, '****');
+INSERT INTO `priorities` VALUES (3, '***');
+INSERT INTO `priorities` VALUES (4, '**');
+INSERT INTO `priorities` VALUES (5, '*');
 
 SET FOREIGN_KEY_CHECKS = 1;

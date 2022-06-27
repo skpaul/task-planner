@@ -11,7 +11,7 @@
  Target Server Version : 100417
  File Encoding         : 65001
 
- Date: 27/06/2022 01:12:29
+ Date: 27/06/2022 13:28:47
 */
 
 SET NAMES utf8mb4;
@@ -27,10 +27,14 @@ CREATE TABLE `tasks`  (
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `assignedTo` int NULL DEFAULT 0,
   `taskStatusId` int NULL DEFAULT 0,
-  `updatedDatetime` datetime NULL DEFAULT NULL,
+  `isDiscussionRequired` tinyint NULL DEFAULT 0,
+  `discussionRequestedOn` datetime NULL DEFAULT NULL,
   `imageName` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `priorityId` int NULL DEFAULT 0,
   `isApproved` tinyint NULL DEFAULT 0,
+  `createdOn` datetime NULL DEFAULT NULL,
+  `startedOn` datetime NULL DEFAULT NULL,
+  `finishedOn` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`taskId`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 

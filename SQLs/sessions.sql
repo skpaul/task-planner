@@ -11,7 +11,7 @@
  Target Server Version : 100417
  File Encoding         : 65001
 
- Date: 27/06/2022 01:12:00
+ Date: 27/06/2022 13:28:25
 */
 
 SET NAMES utf8mb4;
@@ -27,6 +27,6 @@ CREATE TABLE `sessions`  (
   `data` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
   `datetime` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

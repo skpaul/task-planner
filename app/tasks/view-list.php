@@ -51,9 +51,24 @@
         }
     #endregion
 
-    $sql = "SELECT * from tasks where assignedTo = $developerId";
+    $sql = "SELECT
+                tasks.taskId,
+                tasks.title, 
+                tasks.description, 
+                tasks.isDiscussionRequired,
+                tasks.taskStatusId, 
+                tasks.imageName, 
+                priorities.`name` AS priority
+            FROM
+                tasks
+                INNER JOIN
+                priorities
+                ON 
+		        tasks.priorityId = priorities.priorityId
+         where assignedTo = $developerId AND taskStatusId <> 3 order by tasks.priorityId";
     $tasks = $db->selectMany($sql);
 
+    $statuses = $db->selectMany("select * from task_statuses order by statusId");
 ?>
 
 <!DOCTYPE html>
@@ -118,7 +133,31 @@
                             <div class="card">
                                 <h2><?=$task->title?></h2>
                                 <p><?=$task->description?></p>
-                                <img src="<?=BASE_URL?>/screenshots/<?=$task->imageName?>" alt="" srcset="">
+                               
+                               
+                                <div class="grid fr3">
+                                    <div>
+                                        Priority: <?=$task->priority?>
+                                    </div>
+                                    <form class="discussionForm" action="<?=BASE_URL?>/app/tasks/set-discussion.php?session-id=<?=$encSessionId?>" method="post">
+                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">    
+                                        <input type="checkbox" name="isDiscussionRequired" value="1" <?=$task->isDiscussionRequired==1? "checked": "" ?> > Discussion required
+                                    </form>
+                                    <form class="statusForm" action="<?=BASE_URL?>/app/tasks/update-status.php?session-id=<?=$encSessionId?>" method="post">
+                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">
+                                        <select name="status" title="Current status of this task">
+                                            <?php
+                                                foreach ($statuses as $status) {
+                                            ?>
+                                                <option value="<?=$status->statusId?>" <?=$status->statusId == $task->taskStatusId ? "selected": ""?> ><?=$status->statusName?></option>
+                                            <?php
+                                                }
+                                            ?>
+                                        </select>
+                                    </form>
+                                </div>
+
+                                <img src="<?=BASE_URL?>/screenshots/<?=$task->imageName?>">
                             </div><!-- card/ -->
                         <?php
                             }
@@ -141,13 +180,26 @@
         <script>
             var baseUrl = '<?php echo BASE_URL; ?>';
         </script>
-        <?php
-        Required::jquery()->hamburgerMenu()->sweetModalJS()->airDatePickerJS()->moment()->swiftSubmit();
-        
-        ?>
+        <?php Required::jquery()->hamburgerMenu()->sweetModalJS()->airDatePickerJS()->moment()->swiftSubmit();?>
+
         <script src="<?= BASE_URL ?>/assets/plugins/jquery-ui/jquery-ui.min.js" ;></script>
        
+        <script>
+            $(document).ready(function(){
+                let statusForm =  $('.statusForm');
+                statusForm.swiftSubmit({},null,null, null, null, null);
 
+                let discussionForm =  $('.discussionForm');
+                discussionForm.swiftSubmit({},null,null, null, null, null);
+
+                $('select[name="status"]').change(function(){
+                   $(this).closest('form').submit();
+                });
+
+                $('input[name="isDiscussionRequired"]').change(function(){
+                   $(this).closest('form').submit();
+                });
+            });
+        </script>
     </body>
-
 </html>
