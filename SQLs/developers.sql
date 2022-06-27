@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : XAMPP
+ Source Server         : Bar Council
  Source Server Type    : MySQL
- Source Server Version : 100417
- Source Host           : localhost:3306
- Source Schema         : task_planner
+ Source Server Version : 100505
+ Source Host           : 192.168.61.178:3306
+ Source Schema         : xdev_task_planner
 
  Target Server Type    : MySQL
- Target Server Version : 100417
+ Target Server Version : 100505
  File Encoding         : 65001
 
- Date: 27/06/2022 13:27:59
+ Date: 27/06/2022 16:13:04
 */
 
 SET NAMES utf8mb4;
@@ -26,6 +26,7 @@ CREATE TABLE `developers`  (
   `fullName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `loginName` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   `loginPassword` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
+  `role` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '',
   PRIMARY KEY (`developerId`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 

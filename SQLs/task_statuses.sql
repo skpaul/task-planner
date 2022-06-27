@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : XAMPP
+ Source Server         : Bar Council
  Source Server Type    : MySQL
- Source Server Version : 100417
- Source Host           : localhost:3306
- Source Schema         : task_planner
+ Source Server Version : 100505
+ Source Host           : 192.168.61.178:3306
+ Source Schema         : xdev_task_planner
 
  Target Server Type    : MySQL
- Target Server Version : 100417
+ Target Server Version : 100505
  File Encoding         : 65001
 
- Date: 27/06/2022 13:28:36
+ Date: 27/06/2022 16:13:32
 */
 
 SET NAMES utf8mb4;
