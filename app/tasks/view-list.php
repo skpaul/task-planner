@@ -21,8 +21,7 @@
     #endregion
 
     #region Validate query string
-        try {
-          
+        try {          
             $encSessionId = $validator->title("Session parameter")->get("session-id")->required()->validate();
         } catch (\ValidationException $exp) {
             die($json->fail()->message($exp->getMessage(). " Please login again.")->create());
@@ -43,7 +42,7 @@
             //DbSession() constructor requires a connected Database instance.
             $session = new DbSession($db, SESSION_TABLE);
             $session->continue((int) $sessionId);
-           $developerId = $session->getData("devId");
+            $developerId = $session->getData("devId");
         } catch (\SessionException $th) {
             die($json->fail()->message("Invalid session. Please login again.")->create());
         } catch (\Exception $exp) {
@@ -69,6 +68,7 @@
     $tasks = $db->selectMany($sql);
 
     $statuses = $db->selectMany("select * from task_statuses order by statusId");
+    $developer = $db->selectSingle("select * from developers where developerId=$developerId");
 ?>
 
 <!DOCTYPE html>
@@ -119,7 +119,14 @@
                             </nav> 
                             -->
 
-                   
+                <?php
+                    if($developer->role == "admin"){
+                        echo ' <a href="'.BASE_URL.'/app/tasks/progress.php?session-id='.$encSessionId .'">Show Progress</a>';
+                    }
+                ?>
+                
+               
+
                 <div>
                     <a class="fg-muted flex align-items-center justify-content-end" href="<?= BASE_URL ?>/logout.php?session-id=<?= $encSessionId ?>">
                         <span class="m-icons">logout</span> Logout

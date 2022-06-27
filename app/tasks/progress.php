@@ -138,8 +138,6 @@
                             <div class="card">
                                 <h2><?=$task->title?></h2>
                                 <p><?=$task->description?></p>
-                               
-                               
                                 <div class="grid fr4">
                                     <div>
                                         Dev: <?=$task->fullName?>
