@@ -54,6 +54,9 @@ try {
 #endregion
 
 
+    $devopers = $db->selectMany("select developerId, fullName from developers order by fullName");
+    $priorities = $db->selectMany("select priorityId, name from priorities order by priorityId");
+
 ?>
 
 <!DOCTYPE html>
@@ -92,16 +95,19 @@ try {
             </header>
 
             <main class="main">
-                <div class="container">
+            <div class="container-fluid flex flex-wrap">
                 
 
-                    <!-- 
-                        <nav class="left-nav">
+                <nav class="left-nav">
                         <?php
-                        // echo AdminLeftNav::CreateFor($roleCode, BASE_URL, $encSessionId);
+                            require_once(ROOT_DIRECTORY . '/inc/AdminLeftNav.php');
+                            echo AdminLeftNav::CreateFor("superadmin", BASE_URL, $encSessionId);
                         ?>
                         </nav> 
-                    -->
+
+                  
+
+                    <div class="content">
 
                     <div>
                         <a class="fg-muted flex ai-center jc-end" href="<?= BASE_URL ?>/logout.php?session-id=<?= $encSessionId ?>">
@@ -109,16 +115,34 @@ try {
                         </a>
                     </div>
 
-                    <div class="content">
                         <div class="card">
                             <p class="steps fg-muted">Step 6 of 6</p>
-                            <form action="create-task-processor.php?action=<?= $encAction ?>&session-id=<?= $encSessionId ?>" method="post" enctype="multipart/form-data">
+                            <form action="create-task-processor.php?session-id=<?= $encSessionId ?>" method="post" enctype="multipart/form-data">
                                 
                                 <div class="field">
                                     <label for="">Title</label>
                                     <input type="text" name="title">
                                     <input type="text" name="description">
-                                    <input type="text" name="assignedTo">
+                                    <select name="assignedTo">
+                                        <option value=""></option>
+                                        <?php
+                                            foreach ($devopers as $dev) {
+                                        ?>
+                                            <option value="<?=$dev->developerId?>"><?=$dev->fullName?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                    </select>
+                                    <select name="priorityId">
+                                        <?php
+                                            foreach ($priorities as $prio) {
+                                        ?>
+                                            <option value="<?=$prio->priorityId?>"><?=$prio->name?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                    </select>
+                                   
                                 </div>
                                 <section class="formSection">
                                     <!-- Photo upload starts -->
@@ -164,7 +188,7 @@ try {
             var baseUrl = '<?php echo BASE_URL; ?>';
         </script>
         <?php
-        Required::jquery()->hamburgerMenu()->sweetModalJS()->airDatePickerJS()->moment()->swiftSubmit()->SwiftNumeric();
+        Required::jquery()->hamburgerMenu()->sweetModalJS()->airDatePickerJS()->moment()->swiftSubmit()->SwiftNumeric()->leftNavJS();
         ?>
         <script src="<?= BASE_URL ?>/assets/plugins/jquery-ui/jquery-ui.min.js" ;></script>
         <script src="photo-sign.js?v=<?= time() ?>"></script>

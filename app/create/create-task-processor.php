@@ -62,8 +62,9 @@
         $updatedData["title"] = $_POST["title"];
         $updatedData["description"] = $_POST["description"];
         $updatedData["assignedTo"] = $_POST["assignedTo"];
+        $updatedData["priorityId"] = $_POST["priorityId"];
         $updatedData["taskStatusId"] = 1;
-        $updatedData["updatedDatetime"] =  $now;
+        $updatedData["createdOn"] =  $now;
         
         $id = $db->insert("tasks", $updatedData);
         $sql = "UPDATE tasks set imageName =:imageName where taskId=$id";
