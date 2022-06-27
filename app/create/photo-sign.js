@@ -106,7 +106,7 @@ function ValidatePhoto(fileInputId, maximumKB, requiredHeight, requiredWidth){
 
 $(function(){
     $("#ApplicantPhoto").change(function(){
-        var isValid = ValidatePhoto("ApplicantPhoto", 100, 300,300);
+        var isValid = ValidatePhoto("ApplicantPhoto", 500, 300,300);
         if(isValid){
             var fileInput = this;
             if (fileInput.files && fileInput.files[0]) {
