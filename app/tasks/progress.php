@@ -56,7 +56,8 @@
                 tasks.description, 
                 tasks.isDiscussionRequired,
                 tasks.taskStatusId, 
-                tasks.imageName, 
+                tasks.images, 
+                tasks.imagesType, 
                 priorities.`name` AS priority,
                 developers.fullName,
                 tasks.isApproved, 
@@ -134,7 +135,10 @@
 
                         <?php
                             foreach ($tasks as $task) {
+                               
+                             
                         ?>
+                        
                             <div class="card">
                                 <h2><?=$task->title?></h2>
                                 <p><?=$task->description?></p>
@@ -178,6 +182,31 @@
                                             <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">    
                                             <input type="checkbox" name="isApproved" value="1" <?=$task->isApproved==1? "checked": "" ?> > Approve
                                         </form>
+                                    </div>
+
+                                    <div>
+                                        <?php
+                                            if(isset($task->images) && !empty($task->images)){
+                                                $images = explode(',', $task->images);
+                                                //imagesType
+                                                if($task->imagesType == "link"){
+                                                    $sl=1;
+                                                    echo '<ol style="list-style: number; margin-left: 20px;">';
+                                                    foreach ($images as $photo) {
+                                                        echo '<li>';
+                                                        echo '<a style="color:white;" href="'. trim($photo).'" target="_blank">Image- '. $sl++ .'</a>';
+                                                        echo '</li>';
+                                                    }
+                                                    echo '</ol>';
+                                                }
+                                                else{
+                                                    foreach ($images as $photo) {
+                                                        echo ' <img src="'. trim($photo).'">';
+                                                    }
+                                                    
+                                                }
+                                            }
+                                        ?>
                                     </div>
                                 </div>
                             </div><!-- card/ -->

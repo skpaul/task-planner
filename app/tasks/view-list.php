@@ -56,7 +56,8 @@
                 tasks.description, 
                 tasks.isDiscussionRequired,
                 tasks.taskStatusId, 
-                tasks.imageName, 
+                tasks.images, 
+                tasks.imagesType, 
                 priorities.`name` AS priority
             FROM
                 tasks
@@ -163,8 +164,31 @@
                                         </select>
                                     </form>
                                 </div>
+                                <div>
+                                    <?php
+                                        if(isset($task->images) && !empty($task->images)){
+                                            $images = explode(',', $task->images);
+                                            //imagesType
+                                            if($task->imagesType == "link"){
+                                                $sl=1;
+                                                echo '<ol style="list-style: number; margin-left: 20px;">';
+                                                foreach ($images as $photo) {
+                                                    echo '<li>';
+                                                    echo '<a style="color:white;" href="'. trim($photo).'" target="_blank">Image- '. $sl++ .'</a>';
+                                                    echo '</li>';
+                                                }
+                                                echo '</ol>';
+                                            }
+                                            else{
+                                                foreach ($images as $photo) {
+                                                    echo ' <img src="'. trim($photo).'">';
+                                                }
+                                                
+                                            }
+                                        }
+                                    ?>
+                                </div>
 
-                                <img src="<?=BASE_URL?>/screenshots/<?=$task->imageName?>">
                             </div><!-- card/ -->
                         <?php
                             }

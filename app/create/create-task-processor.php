@@ -59,29 +59,18 @@
     try {
 
         $now = $clock->toString("now", DatetimeFormat::MySqlDatetime());
-        $updatedData["title"] = $_POST["title"];
-        $updatedData["description"] = $_POST["description"];
-        $updatedData["assignedTo"] = $_POST["assignedTo"];
-        $updatedData["priorityId"] = $_POST["priorityId"];
-        $updatedData["taskStatusId"] = 1;
-        $updatedData["createdOn"] =  $now;
+        $task["title"] = $_POST["title"];
+        $task["description"] = $_POST["description"];
+        $task["assignedTo"] = $_POST["assignedTo"];
+        $task["priorityId"] = $_POST["priorityId"];
+        $task["images"] = $_POST["images"];
+        $task["imagesType"] = $_POST["imagesType"];
+        $task["taskStatusId"] = 1;
+        $task["createdOn"] =  $now;
+
         
-        $id = $db->insert("tasks", $updatedData);
-        $sql = "UPDATE tasks set imageName =:imageName where taskId=$id";
-        $result = $db->update($sql, array("imageName"=>"$id.jpg"));
-
-        Imaging::validate("ApplicantPhoto", "Applicant Photo" ,0,0,100);
-
-        $photoDirectory = ROOT_DIRECTORY . "/screenshots";
-        if (!file_exists($photoDirectory)) {
-            mkdir($photoDirectory, 0777, true);
-        }
-        $photoPath = $photoDirectory . "/" . $id . '.jpg';
-        if (file_exists($photoPath)) {
-            unlink($photoPath);
-        }
-
-        Imaging:: save("ApplicantPhoto", "Applicant's photo" , $photoPath);
+        $id = $db->insert("tasks", $task);
+       
 
     } catch (\Exception $exp) {
         $logger->createLog($exp->getMessage());

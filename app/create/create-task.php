@@ -119,12 +119,10 @@ try {
                             <p class="steps fg-muted">Step 6 of 6</p>
                             <form action="create-task-processor.php?session-id=<?= $encSessionId ?>" method="post" enctype="multipart/form-data">
                                 
-                                <div class="field">
-                                    <label for="">Title</label>
-                                    <input type="text" name="title">
-                                    <input type="text" name="description">
-                                    <select name="assignedTo">
-                                        <option value=""></option>
+                                <input type="text" name="title" placeholder="title">
+                                <input type="text" name="description" placeholder="description">
+                                <select name="assignedTo">
+                                        <option value="">Assign to</option>
                                         <?php
                                             foreach ($devopers as $dev) {
                                         ?>
@@ -133,7 +131,9 @@ try {
                                             }
                                         ?>
                                     </select>
+
                                     <select name="priorityId">
+                                        <option value="">priority</option>
                                         <?php
                                             foreach ($priorities as $prio) {
                                         ?>
@@ -142,29 +142,14 @@ try {
                                             }
                                         ?>
                                     </select>
-                                   
-                                </div>
-                                <section class="formSection">
-                                    <!-- Photo upload starts -->
-                                    <?php
-                                    $photo_path = BASE_URL . "/assets/images/default-photo.jpg";
-                                    $signature_path = BASE_URL . "/assets/images/default-signature.jpg";
-                                   
-                                    ?>
-                                    <div class="field">
-                                        <label class="required">Photo</label>
-                                        <div class="instruction">Photo dimension must be 300X300 pixels and size less than 100 kilobytes.</div>
-                                        
-                                        <img name="ApplicantPhoto" id="ApplicantPhotoImage" src="<?= $photo_path; ?>" 
-                                        style="width: 150px;" class="hidden">
-
-                                        <label class="btn outline d-block mincontent mt025">
-                                            <input type="file" title="Applicant's Photo" name="ApplicantPhoto" id="ApplicantPhoto" class="photo  " data-required="required" data-title="Applicant's Photo" accept="image/jpeg" style="display: none;">
-                                        Select a photo
-                                        </label>
-                                    </div>
-                                </section>
-                                
+                                    <a style="color: white;" href="https://pasteboard.co/" target="_blank" rel="noopener noreferrer">pasteboard.co</a>
+                                    <a style="color: white;" href="https://imgbb.com/upload" target="_blank" rel="noopener noreferrer">imgbb.com</a>
+                                    <input type="text" name="images" placeholder="photos separated by comma">
+                                    <select name="imagesType">
+                                        <option value="">Image type</option>
+                                        <option value="link">Link</option>
+                                        <option value="file">Image file (.jpg/.png)</option>
+                                    </select>
                                 <div class="mt300">
                                     <input class="form-submit-button" type="submit" value="Submit">
                                 </div>
