@@ -11,7 +11,7 @@
  Target Server Version : 100417
  File Encoding         : 65001
 
- Date: 22/07/2022 16:27:46
+ Date: 23/07/2022 01:59:11
 */
 
 SET NAMES utf8mb4;
@@ -51,11 +51,11 @@ CREATE TABLE `priorities`  (
 -- Records of priorities
 -- ----------------------------
 INSERT INTO `priorities` VALUES (0, '');
-INSERT INTO `priorities` VALUES (1, '*****');
-INSERT INTO `priorities` VALUES (2, '****');
+INSERT INTO `priorities` VALUES (1, '*');
+INSERT INTO `priorities` VALUES (2, '**');
 INSERT INTO `priorities` VALUES (3, '***');
-INSERT INTO `priorities` VALUES (4, '**');
-INSERT INTO `priorities` VALUES (5, '*');
+INSERT INTO `priorities` VALUES (4, '****');
+INSERT INTO `priorities` VALUES (5, '*****');
 
 -- ----------------------------
 -- Table structure for sessions
@@ -67,13 +67,14 @@ CREATE TABLE `sessions`  (
   `data` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
   `datetime` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 40 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sessions
 -- ----------------------------
 INSERT INTO `sessions` VALUES (37, '1', '{\"devId\":1}', '2022-07-22 16:06:47');
 INSERT INTO `sessions` VALUES (39, '2', '{\"devId\":2}', '2022-07-22 16:14:01');
+INSERT INTO `sessions` VALUES (40, '1', '{\"devId\":1}', '2022-07-23 01:53:14');
 
 -- ----------------------------
 -- Table structure for task_statuses
@@ -104,8 +105,8 @@ CREATE TABLE `tasks`  (
   `taskStatusId` int NULL DEFAULT 0,
   `isDiscussionRequired` tinyint NULL DEFAULT 0,
   `discussionRequestedOn` datetime NULL DEFAULT NULL,
-  `images` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT 'multiple photos separated by comma',
-  `imagesType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT 'Link or jpg/png',
+  `attachments` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT 'multiple photos separated by comma',
+  `attachmentsType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT 'Link or jpg/png/pdf/etc',
   `priorityId` int NULL DEFAULT 0,
   `isApproved` tinyint NULL DEFAULT 0,
   `approvedOn` datetime NULL DEFAULT NULL,
@@ -113,11 +114,13 @@ CREATE TABLE `tasks`  (
   `startedOn` datetime NULL DEFAULT NULL,
   `finishedOn` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`taskId`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tasks
 -- ----------------------------
-INSERT INTO `tasks` VALUES (7, 'asdf', 'asdf', 2, 1, 0, NULL, 'https://ibb.co/CvRkRyL, https://ibb.co/CvRkRyL', 'link', 3, 0, NULL, '2022-07-22 15:21:38', NULL, NULL);
+INSERT INTO `tasks` VALUES (15, 'multiline 15', 'lkasdj\r\nasjdlfsj\r\nasdflk\r\n', 1, 1, 1, '2022-07-23 01:35:28', 'asdsdf', 'link', 4, 0, NULL, '2022-07-22 19:49:19', NULL, NULL);
+INSERT INTO `tasks` VALUES (16, 'multiline 16', '1. lkasdj\r\n2. asjdlfsj\r\n3. asdflk\r\n', 1, 1, 0, NULL, '', '', 4, 0, '2022-07-23 00:21:32', '2022-07-21 21:41:07', NULL, NULL);
+INSERT INTO `tasks` VALUES (17, 'Attachment test', 'lsakdj alsdflsdlsdkfjl.\r\nalsdjlsdfj lsdf lsdlsfj. alsdjdfsda lasdfjsdl lasdjf lasdkf asldkfjsadl sldafsadlf asdf jlasdflsadf aslfjsdaf asdf.', 1, 1, 0, NULL, '', '', 0, 0, NULL, '2022-07-23 00:40:28', NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
