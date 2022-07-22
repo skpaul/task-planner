@@ -60,7 +60,11 @@
 
         $now = $clock->toString("now", DatetimeFormat::MySqlDatetime());
         $task["title"] = $_POST["title"];
-        $task["description"] = $_POST["description"];
+        $description = $_POST["description"];
+        // $description = str_replace('<br />', PHP_EOL, $description);
+        // $description = str_replace('<br />', "\n", $description);
+        // $description = str_replace("\n", '<br />',  $description);
+        $task["description"] =  $description;  //$_POST["description"];
         $task["assignedTo"] = $_POST["assignedTo"];
         $task["priorityId"] = $_POST["priorityId"];
         $task["images"] = $_POST["images"];

@@ -62,7 +62,7 @@ try {
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?= ORGANIZATION_SHORT_NAME ?></title>
+        <title>Create Task || <?= ORGANIZATION_SHORT_NAME ?></title>
         <?php
         Required::metaTags()->omnicss()->griddle()->bootstrapGrid()->sweetModalCSS()->airDatePickerCSS();
         ?>
@@ -120,7 +120,7 @@ try {
                             <form action="create-task-processor.php?session-id=<?= $encSessionId ?>" method="post" enctype="multipart/form-data">
                                 
                                 <input type="text" name="title" placeholder="title">
-                                <input type="text" name="description" placeholder="description">
+                                <textarea name="description" placeholder="description" cols="30" rows="10"></textarea>
                                 <select name="assignedTo">
                                         <option value="">Assign to</option>
                                         <?php
