@@ -74,7 +74,7 @@
                 developers
                 ON 
 		        tasks.assignedTo = developers.developerId
-            where isApproved=0 order by tasks.priorityId";
+            where isApproved=0 order by tasks.taskId DESC";
     $tasks = $db->selectMany($sql);
     $statuses = $db->selectMany("select * from task_statuses order by statusId");
 ?>
@@ -93,6 +93,58 @@
         <link href="<?= BASE_URL ?>/assets/plugins/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet">
 
         <style>
+            .task-card{
+                font-size: 14px;
+                border: 1px solid #353b44;
+                border-radius: 5px;
+                padding: 10px;
+                padding-bottom: 5px;
+                margin-bottom: 20px;
+            }
+            .task-title{
+                font-weight: 800;
+                letter-spacing: 0.01247rem;
+                /* font-size: 16px; */
+            }
+
+            .task-description{
+                font-size: 14px;
+                line-height: 1.5;
+                border-bottom: 1px solid #353b44;
+                padding-bottom: 9px;
+                margin-bottom: 2px;
+            }
+
+            div.priority{
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+            }
+
+            .discussionForm, .statusForm{
+                display: flex;
+                align-items: center;
+            }
+
+            .priority-star{
+                color: #f2982f;
+                margin-left: 5px;
+                font-size: 14px;
+                line-height: 1px;
+            }
+
+            select{
+                font-size: 12px !important;
+                padding: 0px !important;
+                margin-top: 0 !important;
+                border: none !important;
+                width: auto !important;
+            }
+
+            label{
+                font-weight: normal !important;
+                font-size: 12px !important;
+            }
             .sweet-modal-content {
                 color: black;
             }
@@ -108,6 +160,7 @@
                 border-color: red !important;
             }
         </style>
+
 
     </head>
 
@@ -133,11 +186,105 @@
                             </a>
                         </div>
 
+                        Showing only un-approved tasks from newer to older
                         <?php
                             foreach ($tasks as $task) {
-                               
-                             
                         ?>
+
+                            <div class="task-card">
+                                <div class="task-title"><?=$task->title?></div>
+                                <div class="task-description"><?=nl2br($task->description)?></div>
+                               
+                               
+                                <div class="grid fr4-lg fr1-sm" style="font-size: 12px !important;">
+                                    <div class="priority">
+                                        Priority:  <span class="priority-star"><?=str_replace("*", "&bigstar;", $task->priority)?></span>
+                                    </div>
+                                    <div class="createdOn">
+                                        <?php
+                                            $created = $clock->toDate($task->createdOn);
+                                            $now = $clock->toDate("now");
+                                            $diff = $created->diff($now);
+                                            // $diff = $diff->i;
+                                            if($diff->y > 0){
+                                                $created = "{$diff->y} years ago.";
+                                            }
+                                            else{
+                                                if($diff->m > 0){
+                                                    $created = "{$diff->m} months ago.";
+                                                }
+                                                else{
+                                                    if($diff->d > 0){
+                                                        $created = "{$diff->d} days ago.";
+                                                    }
+                                                    else{
+                                                        if($diff->h > 0){
+                                                            $created = "{$diff->h} hours ago.";
+                                                        }
+                                                        else{
+                                                            if($diff->i > 0){
+                                                                $created = "{$diff->i} minutes ago.";
+                                                            }
+                                                            else{
+                                                                $created = "{$diff->s} seconds ago.";
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        ?>
+                                        Created: <?=$created?>
+                                    </div>
+                                    <form class="discussionForm" action="<?=BASE_URL?>/app/tasks/set-discussion.php?session-id=<?=$encSessionId?>" method="post">
+                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">  
+                                        <label for="">
+                                            <input type="checkbox" name="isDiscussionRequired" value="1" <?=$task->isDiscussionRequired==1? "checked": "" ?> >&nbsp;Discussion required
+                                        </label>  
+                                    </form>
+                                    <form class="statusForm" action="<?=BASE_URL?>/app/tasks/update-status.php?session-id=<?=$encSessionId?>" method="post">
+                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">
+                                        <select style=" height: auto !important;" name="status" title="Current status of this task">
+                                            <?php
+                                                foreach ($statuses as $status) {
+                                            ?>
+                                                <option value="<?=$status->statusId?>" <?=$status->statusId == $task->taskStatusId ? "selected": ""?> ><?=$status->statusName?></option>
+                                            <?php
+                                                }
+                                            ?>
+                                        </select>
+                                    </form>
+                                </div>
+                                <div>
+                                    <?php
+                                        if(isset($task->images) && !empty($task->images)){
+                                            $images = explode(',', $task->images);
+                                            //imagesType
+                                            if($task->imagesType == "link"){
+                                                $sl=1;
+                                                echo '<ol style="list-style: number; margin-left: 20px;">';
+                                                foreach ($images as $photo) {
+                                                    echo '<li>';
+                                                    echo '<a style="color:white;" href="'. trim($photo).'" target="_blank">Image- '. $sl++ .'</a>';
+                                                    echo '</li>';
+                                                }
+                                                echo '</ol>';
+                                            }
+                                            else{
+                                                foreach ($images as $photo) {
+                                                    echo ' <img src="'. trim($photo).'">';
+                                                }
+                                                
+                                            }
+                                        }
+                                    ?>
+                                </div>
+
+                            </div><!-- card/ -->
+
+
+
+
+
                         
                             <div class="card">
                                 <h2><?=$task->title?></h2>

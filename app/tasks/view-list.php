@@ -66,7 +66,7 @@
                 priorities
                 ON 
 		        tasks.priorityId = priorities.priorityId
-         where assignedTo = $developerId AND taskStatusId <> 3 order by tasks.priorityId";
+         where assignedTo = $developerId AND taskStatusId <> 3 order by tasks.priorityId DESC, tasks.taskId ASC";
     $tasks = $db->selectMany($sql);
 
     $statuses = $db->selectMany("select * from task_statuses order by statusId");
@@ -100,9 +100,18 @@
             .task-description{
                 font-size: 14px;
                 line-height: 1.5;
+                padding-bottom: 9px;
+            }
+
+            .attachments{
                 border-bottom: 1px solid #353b44;
+                color:#353b44;
+                font-size: 12px;
                 padding-bottom: 9px;
                 margin-bottom: 2px;
+            }
+            .attachments a, .attachments ol{
+                color:#adbac7;
             }
 
             div.priority{
@@ -190,7 +199,30 @@
                             <div class="task-card">
                                 <div class="task-title"><?=$task->title?></div>
                                 <div class="task-description"><?=nl2br($task->description)?></div>
-                               
+                                <div class="attachments">
+                                    <?php
+                                        if(isset($task->images) && !empty($task->images)){
+                                            $images = explode(',', $task->images);
+                                            //imagesType
+                                            if($task->imagesType == "link"){
+                                                $sl=1;
+                                                echo '<ol>';
+                                                foreach ($images as $photo) {
+                                                    echo '<li>';
+                                                    echo '<a href="'. trim($photo).'" target="_blank">Attachment- '. $sl++ .'</a>';
+                                                    echo '</li>';
+                                                }
+                                                echo '</ol>';
+                                            }
+                                            else{
+                                                foreach ($images as $photo) {
+                                                    echo ' <img src="'. trim($photo).'">';
+                                                }
+                                                
+                                            }
+                                        }
+                                    ?>
+                                </div>
                                
                                 <div class="grid fr4-lg fr1-sm" style="font-size: 12px !important;">
                                     <div class="priority">
@@ -250,30 +282,7 @@
                                         </select>
                                     </form>
                                 </div>
-                                <div>
-                                    <?php
-                                        if(isset($task->images) && !empty($task->images)){
-                                            $images = explode(',', $task->images);
-                                            //imagesType
-                                            if($task->imagesType == "link"){
-                                                $sl=1;
-                                                echo '<ol style="list-style: number; margin-left: 20px;">';
-                                                foreach ($images as $photo) {
-                                                    echo '<li>';
-                                                    echo '<a style="color:white;" href="'. trim($photo).'" target="_blank">Image- '. $sl++ .'</a>';
-                                                    echo '</li>';
-                                                }
-                                                echo '</ol>';
-                                            }
-                                            else{
-                                                foreach ($images as $photo) {
-                                                    echo ' <img src="'. trim($photo).'">';
-                                                }
-                                                
-                                            }
-                                        }
-                                    ?>
-                                </div>
+                              
 
                             </div><!-- card/ -->
                         <?php
