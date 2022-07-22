@@ -301,6 +301,10 @@
                                                     $startedOn = $clock->toString($task->startedOn, DatetimeFormat::BdDatetime());
                                                 }
                                             }
+                                            else{
+                                                $startedOn = "";
+                                            }
+
                                             if(isset($task->finishedOn) && !empty($task->finishedOn)){
                                                 $finishedOn = $clock->toString($task->finishedOn, DatetimeFormat::MySqlDate());
                                                 if($now == $finishedOn){
@@ -310,6 +314,9 @@
                                                 else{
                                                     $finishedOn = $clock->toString($task->finishedOn, DatetimeFormat::BdDatetime());
                                                 }
+                                            }
+                                            else{
+                                                $finishedOn = "";
                                             }
                                            
                                            
