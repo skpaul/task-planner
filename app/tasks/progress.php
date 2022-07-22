@@ -56,8 +56,8 @@
                 tasks.description, 
                 tasks.isDiscussionRequired,
                 tasks.taskStatusId, 
-                tasks.images, 
-                tasks.imagesType, 
+                tasks.attachments, 
+                tasks.attachmentsType, 
                 priorities.`name` AS priority,
                 developers.fullName,
                 tasks.isApproved, 
@@ -83,14 +83,11 @@
 <html>
 
     <head>
-        <title><?= ORGANIZATION_SHORT_NAME ?></title>
+        <title>Progress List || <?= ORGANIZATION_SHORT_NAME ?></title>
         <?php
             Required::omnicss()->griddle()->sweetModalCSS()->airDatePickerCSS();
         ?>
 
-        <link href="<?= BASE_URL ?>/assets/plugins/jquery-ui/jquery-ui.min.css" rel="stylesheet">
-        <link href="<?= BASE_URL ?>/assets/plugins/jquery-ui/jquery-ui.structure.min.css" rel="stylesheet">
-        <link href="<?= BASE_URL ?>/assets/plugins/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet">
 
         <style>
             .task-card{
@@ -110,9 +107,18 @@
             .task-description{
                 font-size: 14px;
                 line-height: 1.5;
+                padding-bottom: 9px;
+            }
+
+            .attachments{
                 border-bottom: 1px solid #353b44;
+                color:#353b44;
+                font-size: 12px;
                 padding-bottom: 9px;
                 margin-bottom: 2px;
+            }
+            .attachments a, .attachments ol{
+                color:#adbac7;
             }
 
             div.priority{
@@ -194,12 +200,59 @@
                             <div class="task-card">
                                 <div class="task-title"><?=$task->title?></div>
                                 <div class="task-description"><?=nl2br($task->description)?></div>
-                               
+                                <div class="attachments">
+                                    <?php
+                                        if(isset($task->attachments) && !empty($task->attachments)){
+                                            $attachments = explode(',', $task->attachments);
+                                            //attachmentsType
+                                            if($task->attachmentsType == "link"){
+                                                $sl=1;
+                                                echo '<ol>';
+                                                foreach ($attachments as $attachment) {
+                                                    echo '<li>';
+                                                    echo '<a href="'. trim($attachment).'" target="_blank">Attachment- '. $sl++ .'</a>';
+                                                    echo '</li>';
+                                                }
+                                                echo '</ol>';
+                                            }
+                                            else{
+                                                foreach ($attachments as $attachment) {
+                                                    echo ' <img src="'. trim($attachment).'">';
+                                                }
+                                                
+                                            }
+                                        }
+                                    ?>
+                                </div>
                                
                                 <div class="grid fr4-lg fr1-sm" style="font-size: 12px !important;">
+                                    <div>
+                                        Assigned to: <?=$task->fullName?>
+                                    </div>
                                     <div class="priority">
                                         Priority:  <span class="priority-star"><?=str_replace("*", "&bigstar;", $task->priority)?></span>
                                     </div>
+                                    <form class="discussionForm" action="<?=BASE_URL?>/app/tasks/set-discussion.php?session-id=<?=$encSessionId?>" method="post">
+                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">  
+                                        <label>
+                                            <input type="checkbox" name="isDiscussionRequired" value="1" <?=$task->isDiscussionRequired==1? "checked": "" ?> >&nbsp;Discussion required
+                                        </label>  
+                                    </form>
+                                  
+
+                                    <form class="statusForm" action="<?=BASE_URL?>/app/tasks/update-status.php?session-id=<?=$encSessionId?>" method="post">
+                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">
+                                        <select style=" height: auto !important;" name="status" title="Current status of this task">
+                                            <?php
+                                                foreach ($statuses as $status) {
+                                            ?>
+                                                <option value="<?=$status->statusId?>" <?=$status->statusId == $task->taskStatusId ? "selected": ""?> ><?=$status->statusName?></option>
+                                            <?php
+                                                }
+                                            ?>
+                                        </select>
+                                    </form>
+
                                     <div class="createdOn">
                                         <?php
                                             $created = $clock->toDate($task->createdOn);
@@ -235,125 +288,46 @@
                                         ?>
                                         Created: <?=$created?>
                                     </div>
-                                    <form class="discussionForm" action="<?=BASE_URL?>/app/tasks/set-discussion.php?session-id=<?=$encSessionId?>" method="post">
-                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">  
-                                        <label for="">
-                                            <input type="checkbox" name="isDiscussionRequired" value="1" <?=$task->isDiscussionRequired==1? "checked": "" ?> >&nbsp;Discussion required
-                                        </label>  
-                                    </form>
-                                    <form class="statusForm" action="<?=BASE_URL?>/app/tasks/update-status.php?session-id=<?=$encSessionId?>" method="post">
-                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">
-                                        <select style=" height: auto !important;" name="status" title="Current status of this task">
-                                            <?php
-                                                foreach ($statuses as $status) {
-                                            ?>
-                                                <option value="<?=$status->statusId?>" <?=$status->statusId == $task->taskStatusId ? "selected": ""?> ><?=$status->statusName?></option>
-                                            <?php
+                                    <div>
+                                        <?php
+                                            $now = $clock->toString("now", DatetimeFormat::MySqlDate());
+                                            if(isset($task->startedOn) && !empty($task->startedOn)){
+                                                $startedOn = $clock->toString($task->startedOn, DatetimeFormat::MySqlDate());
+                                                if($now == $startedOn){
+                                                    //if both are on same date, show only time.
+                                                    $startedOn = $clock->toString($task->startedOn, DatetimeFormat::BdTime());
                                                 }
-                                            ?>
-                                        </select>
-                                    </form>
-                                </div>
-                                <div>
-                                    <?php
-                                        if(isset($task->images) && !empty($task->images)){
-                                            $images = explode(',', $task->images);
-                                            //imagesType
-                                            if($task->imagesType == "link"){
-                                                $sl=1;
-                                                echo '<ol style="list-style: number; margin-left: 20px;">';
-                                                foreach ($images as $photo) {
-                                                    echo '<li>';
-                                                    echo '<a style="color:white;" href="'. trim($photo).'" target="_blank">Image- '. $sl++ .'</a>';
-                                                    echo '</li>';
+                                                else{
+                                                    $startedOn = $clock->toString($task->startedOn, DatetimeFormat::BdDatetime());
                                                 }
-                                                echo '</ol>';
                                             }
-                                            else{
-                                                foreach ($images as $photo) {
-                                                    echo ' <img src="'. trim($photo).'">';
+                                            if(isset($task->finishedOn) && !empty($task->finishedOn)){
+                                                $finishedOn = $clock->toString($task->finishedOn, DatetimeFormat::MySqlDate());
+                                                if($now == $finishedOn){
+                                                    //if both are on same date, show only time.
+                                                    $finishedOn = $clock->toString($task->finishedOn, DatetimeFormat::BdTime());
                                                 }
-                                                
+                                                else{
+                                                    $finishedOn = $clock->toString($task->finishedOn, DatetimeFormat::BdDatetime());
+                                                }
                                             }
-                                        }
-                                    ?>
-                                </div>
-
-                            </div><!-- card/ -->
-
-
-
-
-
-                        
-                            <div class="card">
-                                <h2><?=$task->title?></h2>
-                                <p><?=$task->description?></p>
-                                <div class="grid fr4">
-                                    <div>
-                                        Dev: <?=$task->fullName?>
+                                           
+                                           
+                                           
+                                          
+                                        ?>
+                                        Started: <?=$startedOn?>
                                     </div>
                                     <div>
-                                        Priority: <?=$task->priority?>
-                                    </div>
-                                    <form class="discussionForm" action="<?=BASE_URL?>/app/tasks/set-discussion.php?session-id=<?=$encSessionId?>" method="post">
-                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">    
-                                        <input type="checkbox" name="isDiscussionRequired" value="1" <?=$task->isDiscussionRequired==1? "checked": "" ?> > Discussion required
-                                    </form>
-                                    <form class="statusForm" action="<?=BASE_URL?>/app/tasks/update-status.php?session-id=<?=$encSessionId?>" method="post">
-                                        <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">
-                                        <select name="status" title="Current status of this task">
-                                            <?php
-                                                foreach ($statuses as $status) {
-                                            ?>
-                                                <option value="<?=$status->statusId?>" <?=$status->statusId == $task->taskStatusId ? "selected": ""?> ><?=$status->statusName?></option>
-                                            <?php
-                                                }
-                                            ?>
-                                        </select>
-                                    </form>
-                                </div>
-
-                                <div class="grid fr4">
-                                    <div>
-                                        Created: <?=$task->createdOn?>
-                                    </div>
-                                    <div>
-                                        Started: <?=$task->startedOn?>
-                                    </div>
-                                    <div>
-                                        Finished: <?=$task->finishedOn?>
+                                        Finished: <?=$finishedOn?>
                                     </div>
                                     <div>
                                         <form class="approvalForm" action="<?=BASE_URL?>/app/tasks/approve.php?session-id=<?=$encSessionId?>" method="post">
-                                            <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">    
-                                            <input type="checkbox" name="isApproved" value="1" <?=$task->isApproved==1? "checked": "" ?> > Approve
+                                            <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">  
+                                            <label>
+                                                <input type="checkbox" name="isApproved" value="1" <?=$task->isApproved==1? "checked": "" ?> >&nbsp;Approve
+                                            </label>  
                                         </form>
-                                    </div>
-
-                                    <div>
-                                        <?php
-                                            if(isset($task->images) && !empty($task->images)){
-                                                $images = explode(',', $task->images);
-                                                //imagesType
-                                                if($task->imagesType == "link"){
-                                                    $sl=1;
-                                                    echo '<ol style="list-style: number; margin-left: 20px;">';
-                                                    foreach ($images as $photo) {
-                                                        echo '<li>';
-                                                        echo '<a style="color:white;" href="'. trim($photo).'" target="_blank">Image- '. $sl++ .'</a>';
-                                                        echo '</li>';
-                                                    }
-                                                    echo '</ol>';
-                                                }
-                                                else{
-                                                    foreach ($images as $photo) {
-                                                        echo ' <img src="'. trim($photo).'">';
-                                                    }
-                                                    
-                                                }
-                                            }
-                                        ?>
                                     </div>
                                 </div>
                             </div><!-- card/ -->

@@ -56,8 +56,8 @@
                 tasks.description, 
                 tasks.isDiscussionRequired,
                 tasks.taskStatusId, 
-                tasks.images, 
-                tasks.imagesType, 
+                tasks.attachments, 
+                tasks.attachmentsType, 
                 tasks.createdOn, 
                 priorities.`name` AS priority
             FROM
@@ -66,7 +66,7 @@
                 priorities
                 ON 
 		        tasks.priorityId = priorities.priorityId
-         where assignedTo = $developerId AND taskStatusId <> 3 order by tasks.priorityId DESC, tasks.taskId ASC";
+         where assignedTo = $developerId AND isApproved=0 order by tasks.priorityId DESC, tasks.taskId ASC";
     $tasks = $db->selectMany($sql);
 
     $statuses = $db->selectMany("select * from task_statuses order by statusId");
@@ -144,6 +144,33 @@
                 font-weight: normal !important;
                 font-size: 12px !important;
             }
+
+            .discuss-not-required{
+                color:#7d8591;
+            }
+
+            .discuss-required{
+                color:#47b062;
+            }
+
+            .working{
+                /* display: inline-block; */
+                visibility: visible;
+            }
+
+            .not-working{
+                /* display: inline-block; */
+                visibility: hidden;
+            }
+
+
+            span.label.show-discuss-label{
+                visibility: visible;
+            }
+            span.label.hide-discuss-label{
+                visibility: hidden;
+            }
+
             .sweet-modal-content {
                 color: black;
             }
@@ -201,22 +228,22 @@
                                 <div class="task-description"><?=nl2br($task->description)?></div>
                                 <div class="attachments">
                                     <?php
-                                        if(isset($task->images) && !empty($task->images)){
-                                            $images = explode(',', $task->images);
-                                            //imagesType
-                                            if($task->imagesType == "link"){
+                                        if(isset($task->attachments) && !empty($task->attachments)){
+                                            $attachments = explode(',', $task->attachments);
+                                            //attachmentsType
+                                            if($task->attachmentsType == "link"){
                                                 $sl=1;
                                                 echo '<ol>';
-                                                foreach ($images as $photo) {
+                                                foreach ($attachments as $attachment) {
                                                     echo '<li>';
-                                                    echo '<a href="'. trim($photo).'" target="_blank">Attachment- '. $sl++ .'</a>';
+                                                    echo '<a href="'. trim($attachment).'" target="_blank">Attachment- '. $sl++ .'</a>';
                                                     echo '</li>';
                                                 }
                                                 echo '</ol>';
                                             }
                                             else{
-                                                foreach ($images as $photo) {
-                                                    echo ' <img src="'. trim($photo).'">';
+                                                foreach ($attachments as $attachment) {
+                                                    echo ' <img src="'. trim($attachment).'">';
                                                 }
                                                 
                                             }
@@ -228,8 +255,7 @@
                                     <div class="priority">
                                         Priority:  <span class="priority-star"><?=str_replace("*", "&bigstar;", $task->priority)?></span>
                                     </div>
-                                    <div class="createdOn">
-                                        <?php
+                                    <?php
                                             $created = $clock->toDate($task->createdOn);
                                             $now = $clock->toDate("now");
                                             $diff = $created->diff($now);
@@ -239,19 +265,40 @@
                                             }
                                             else{
                                                 if($diff->m > 0){
-                                                    $created = "{$diff->m} months ago.";
+                                                    if($diff->m == 1){
+                                                        $created = "{$diff->m} month ago.";
+                                                    }
+                                                    else{
+                                                        $created = "{$diff->m} months ago.";
+                                                    }
                                                 }
                                                 else{
                                                     if($diff->d > 0){
-                                                        $created = "{$diff->d} days ago.";
+                                                        if($diff->d == 1){
+                                                            $created = "{$diff->d} day ago.";
+                                                        }
+                                                        else{
+                                                            $created = "{$diff->d} days ago.";
+                                                        }
                                                     }
                                                     else{
                                                         if($diff->h > 0){
-                                                            $created = "{$diff->h} hours ago.";
+                                                            if($diff->h == 1){
+                                                                $created = "{$diff->h} hour ago.";
+                                                            }
+                                                            else{
+                                                                $created = "{$diff->h} hours ago.";
+                                                            }
                                                         }
                                                         else{
                                                             if($diff->i > 0){
-                                                                $created = "{$diff->i} minutes ago.";
+                                                                if($diff->i == 0){
+                                                                    $created = "{$diff->i} minute ago.";
+                                                                }
+                                                                else{
+                                                                    $created = "{$diff->i} minutes ago.";
+                                                                }
+
                                                             }
                                                             else{
                                                                 $created = "{$diff->s} seconds ago.";
@@ -261,15 +308,36 @@
                                                 }
                                             }
                                         ?>
-                                        Created: <?=$created?>
+                                    <div class="createdOn flex ai-center" title="Created on">
+                                        <span class="m-icons">schedule</span> <?=$created?>
                                     </div>
                                     <form class="discussionForm" action="<?=BASE_URL?>/app/tasks/set-discussion.php?session-id=<?=$encSessionId?>" method="post">
                                         <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">  
-                                        <label for="">
-                                            <input type="checkbox" name="isDiscussionRequired" value="1" <?=$task->isDiscussionRequired==1? "checked": "" ?> >&nbsp;Discussion required
+                                            <?php
+                                                if($task->isDiscussionRequired==1){
+                                                    $iconCss = "discuss-required";
+                                                    $labelCss = "show-discuss-label";
+                                                }
+                                                else{
+                                                    $iconCss = "discuss-not-required";
+                                                    $labelCss = "hide-discuss-label";
+                                                }
+                                            ?>
+                                        <label class="flex ai-center" style="cursor: pointer ;" title="Required any discussion ?">
+                                            <span class="m-icons <?=$iconCss?>">contact_support</span>
+                                            <input style="display: none;" type="checkbox" name="isDiscussionRequired" value="1" <?=$task->isDiscussionRequired==1? "checked": "" ?>><span class="label <?=$labelCss?>">Discussion required</span>
                                         </label>  
                                     </form>
                                     <form class="statusForm" action="<?=BASE_URL?>/app/tasks/update-status.php?session-id=<?=$encSessionId?>" method="post">
+                                                <?php
+                                                 if($task->taskStatusId == 2){
+                                                    $iconCss = "working";
+                                                 }
+                                                 else{
+                                                    $iconCss = "not-working";
+                                                 }
+                                                ?>
+                                        <img class="workingIcon <?=$iconCss?>" src="working.gif" style="height: 18px;">
                                         <input type="hidden" name="taskId" value="<?=$crypto->encrypt((string) $task->taskId)?>">
                                         <select style=" height: auto !important;" name="status" title="Current status of this task">
                                             <?php
@@ -312,18 +380,38 @@
        
         <script>
             $(document).ready(function(){
+                function onSuccess(response) {
+                    //do nothing.
+                }
                 let statusForm =  $('.statusForm');
-                statusForm.swiftSubmit({},null,null, null, null, null);
+                statusForm.swiftSubmit({},null,null, onSuccess, null, null);
 
                 let discussionForm =  $('.discussionForm');
-                discussionForm.swiftSubmit({},null,null, null, null, null);
+                discussionForm.swiftSubmit({},null,null, onSuccess, null, null);
 
                 $('select[name="status"]').change(function(){
                    $(this).closest('form').submit();
+                   let selectedVal = $(this).val();
+                   if(selectedVal == 2){
+                        $(this).closest('form').find('.workingIcon').removeClass("not-working").addClass("working");
+                   }
+                   else{
+                        $(this).closest('form').find('.workingIcon').removeClass("working").addClass("not-working");
+                   }
                 });
+
 
                 $('input[name="isDiscussionRequired"]').change(function(){
                    $(this).closest('form').submit();
+                   let isChecked = $(this).is(':checked');
+                   if(isChecked){
+                        $(this).closest("label").find("span.m-icons").removeClass("discuss-not-required").addClass("discuss-required");
+                        $(this).closest("label").find("span.label").removeClass("hide-discuss-label").addClass("show-discuss-label");
+                   }
+                   else{
+                        $(this).closest("label").find("span.m-icons").removeClass("discuss-required").addClass("discuss-not-required");
+                        $(this).closest("label").find("span.label").removeClass("show-discuss-label").addClass("hide-discuss-label");
+                   }
                 });
             });
         </script>

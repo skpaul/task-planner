@@ -67,8 +67,8 @@
         $task["description"] =  $description;  //$_POST["description"];
         $task["assignedTo"] = $_POST["assignedTo"];
         $task["priorityId"] = $_POST["priorityId"];
-        $task["images"] = $_POST["images"];
-        $task["imagesType"] = $_POST["imagesType"];
+        $task["attachments"] = $_POST["attachments"];
+        $task["attachmentsType"] = $_POST["attachmentsType"];
         $task["taskStatusId"] = 1;
         $task["createdOn"] =  $now;
 

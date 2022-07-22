@@ -116,7 +116,7 @@ try {
                     </div>
 
                         <div class="card">
-                            <p class="steps fg-muted">Step 6 of 6</p>
+                            <p class="steps fg-muted">New Task</p>
                             <form action="create-task-processor.php?session-id=<?= $encSessionId ?>" method="post" enctype="multipart/form-data">
                                 
                                 <input type="text" name="title" placeholder="title">
@@ -144,11 +144,11 @@ try {
                                     </select>
                                     <a style="color: white;" href="https://pasteboard.co/" target="_blank" rel="noopener noreferrer">pasteboard.co</a>
                                     <a style="color: white;" href="https://imgbb.com/upload" target="_blank" rel="noopener noreferrer">imgbb.com</a>
-                                    <input type="text" name="images" placeholder="photos separated by comma">
-                                    <select name="imagesType">
+                                    <input type="text" name="attachments" placeholder="separated by comma if multiple">
+                                    <select name="attachmentsType">
                                         <option value="">Image type</option>
                                         <option value="link">Link</option>
-                                        <option value="file">Image file (.jpg/.png)</option>
+                                        <option value="file">File (.jpg/.png/.pdf etc.)</option>
                                     </select>
                                 <div class="mt300">
                                     <input class="form-submit-button" type="submit" value="Submit">
