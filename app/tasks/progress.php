@@ -352,6 +352,10 @@
        
         <script>
             $(document).ready(function(){
+                setTimeout(function(){
+                    location.reload();
+                }, 1000 * 15); //refresh every 15 minutes.
+                
                 let statusForm =  $('.statusForm');
                 statusForm.swiftSubmit({},null,null, null, null, null);
 

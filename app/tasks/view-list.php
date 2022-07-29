@@ -359,6 +359,11 @@
        
         <script>
             $(document).ready(function(){
+
+                setTimeout(function(){
+                    location.reload();
+                }, 1000 * 15); //refresh every 15 minutes.
+
                 function onSuccess(response) {
                     //do nothing.
                 }
