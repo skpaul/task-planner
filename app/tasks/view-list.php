@@ -362,7 +362,7 @@
 
                 setTimeout(function(){
                     location.reload();
-                }, 1000 * 15); //refresh every 15 minutes.
+                }, 1000 * 60 * 15); //refresh every 15 minutes.
 
                 function onSuccess(response) {
                     //do nothing.
