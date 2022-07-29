@@ -202,7 +202,11 @@
             <main class="main">
                 <div class="container">
                     <div class="content">
+                        
                         <?php
+                            if(count($tasks) == 0){
+                                echo '<img src="../../assets/images/ship.png" alt="">';
+                            }
                             foreach ($tasks as $task) {
                         ?>
                             <div class="task-card">
