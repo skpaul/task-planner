@@ -5,7 +5,7 @@
     require_once("../../Required.php");
 
     Required::Logger()
-        ->Database()->DbSession()
+        ->Database()->DbSession()->headerBrand()->applicantHeaderNav()
         ->Clock()
         ->Cryptographer()
         ->JSON()
@@ -85,7 +85,7 @@
     <head>
         <title>Progress List || <?= ORGANIZATION_SHORT_NAME ?></title>
         <?php
-            Required::omnicss()->griddle()->sweetModalCSS()->airDatePickerCSS();
+            Required::omnicss()->griddle()->sweetModalCSS()->airDatePickerCSS()->favicon();
         ?>
 
 
@@ -96,8 +96,10 @@
                 border-radius: 5px;
                 padding: 10px;
                 padding-bottom: 5px;
-                margin-bottom: 20px;
+                margin-bottom: 50px;
+                background-color: #222730;
             }
+
             .task-title{
                 font-weight: 800;
                 letter-spacing: 0.01247rem;
@@ -166,32 +168,20 @@
                 border-color: red !important;
             }
         </style>
-
-
     </head>
 
     <body>
         <div class="master-wrapper">
             <header class="header">
-              
+                <?php
+                    echo HeaderBrand::prepare(array("baseUrl"=>BASE_URL, "hambMenu"=>true));
+                    echo ApplicantHeaderNav::prepare(array("baseUrl"=>BASE_URL, "role"=>"admin", "sid"=>$encSessionId ));
+                ?>
             </header>
 
             <main class="main">
-                <div class="container-fluid flex flex-wrap">
-                        <nav class="left-nav">
-                            <?php
-                                require_once(ROOT_DIRECTORY . '/inc/AdminLeftNav.php');
-                                echo AdminLeftNav::CreateFor("superadmin", BASE_URL, $encSessionId);
-                            ?>
-                        </nav> 
-
+                <div class="container flex flex-wrap">
                     <div class="content">
-                        <div>
-                            <a class="fg-muted flex align-items-center justify-content-end" href="<?= BASE_URL ?>/logout.php?session-id=<?= $encSessionId ?>">
-                                <span class="m-icons">logout</span> Logout
-                            </a>
-                        </div>
-
                         Showing only un-approved tasks from newer to older
                         <?php
                             foreach ($tasks as $task) {
@@ -318,10 +308,6 @@
                                             else{
                                                 $finishedOn = "";
                                             }
-                                           
-                                           
-                                           
-                                          
                                         ?>
                                         Started: <?=$startedOn?>
                                     </div>
@@ -360,7 +346,7 @@
             var baseUrl = '<?php echo BASE_URL; ?>';
         </script>
 
-        <?php Required::jquery()->sweetModalJS()->airDatePickerJS()->moment()->swiftSubmit()->leftNavJS(); ?>
+        <?php Required::jquery()->sweetModalJS()->airDatePickerJS()->moment()->swiftSubmit()->hamburgerMenu(); ?>
 
         <script src="<?= BASE_URL ?>/assets/plugins/jquery-ui/jquery-ui.min.js";></script>
        

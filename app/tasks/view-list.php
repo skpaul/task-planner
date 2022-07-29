@@ -5,7 +5,7 @@
     require_once("../../Required.php");
 
     Required::Logger()
-        ->Database()->DbSession()
+        ->Database()->DbSession()->headerBrand()->applicantHeaderNav()
         ->Clock()
         ->Cryptographer()
         ->JSON()
@@ -79,7 +79,7 @@
     <head>
         <title>Tasks List || <?= ORGANIZATION_SHORT_NAME ?></title>
         <?php
-            Required::omnicss()->griddle()->sweetModalCSS()->airDatePickerCSS();
+            Required::omnicss()->griddle()->sweetModalCSS()->airDatePickerCSS()->favicon();
         ?>
 
         <style>
@@ -89,7 +89,8 @@
                 border-radius: 5px;
                 padding: 10px;
                 padding-bottom: 5px;
-                margin-bottom: 20px;
+                margin-bottom: 50px;
+                background-color: #222730;
             }
             .task-title{
                 font-weight: 800;
@@ -192,33 +193,14 @@
     <body>
         <div class="master-wrapper">
             <header class="header">
-              
+                <?php
+                    echo HeaderBrand::prepare(array("baseUrl"=>BASE_URL, "hambMenu"=>true));
+                    echo ApplicantHeaderNav::prepare(array("baseUrl"=>BASE_URL, "role"=>$developer->role, "sid"=>$encSessionId ));
+                ?>
             </header>
 
             <main class="main">
                 <div class="container">
-                    <!-- 
-                            <nav class="left-nav">
-                            <?php
-                            // echo AdminLeftNav::CreateFor($roleCode, BASE_URL, $encSessionId);
-                            ?>
-                            </nav> 
-                            -->
-
-                <?php
-                    if($developer->role == "admin"){
-                        echo ' <a href="'.BASE_URL.'/app/tasks/progress.php?session-id='.$encSessionId .'">Show Progress</a>';
-                    }
-                ?>
-                
-               
-
-                <div>
-                    <a class="fg-muted flex align-items-center justify-content-end" href="<?= BASE_URL ?>/logout.php?session-id=<?= $encSessionId ?>">
-                        <span class="m-icons">logout</span> Logout
-                    </a>
-                </div>
-
                     <div class="content">
                         <?php
                             foreach ($tasks as $task) {
@@ -356,14 +338,7 @@
                         <?php
                             }
                         ?>
-                       
                     </div><!-- .content/ -->
-
-                    <!-- 
-                            <aside style="display: flex; flex-direction: column;">
-                                asdsdaf
-                            </aside> 
-                            -->
                 </div><!-- .container// -->
             </main>
             <footer class="footer">

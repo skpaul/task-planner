@@ -32,9 +32,9 @@ class HeaderBrand{
             <div class="brand-container">
                 <div class="$container">
                     <div class="brand">
-                        <img class="logo" src="$baseUrl/assets/images/bar-logo.png" alt="Bangladesh Govt. Logo">
+                        <img class="logo" src="$baseUrl/assets/images/winbip-logo.png" alt="Winbip Logo">
                         <div style="flex:1; margin-left: 0.4rem;">
-                            <div class="govt-name" >&nbsp;Government of the People's Republic of Bangladesh</div>
+                            <div class="govt-name" >&nbsp;Winbip Solutions</div>
                             <div class="org">$orgName</div>
                         </div>
                         $hamIcon

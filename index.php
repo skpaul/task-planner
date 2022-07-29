@@ -29,7 +29,7 @@
     <head>
         <title><?= ORGANIZATION_FULL_NAME ?></title>
         <?php
-            Required::html5shiv()->omnicss()->sweetModalCSS();
+            Required::html5shiv()->omnicss()->sweetModalCSS()->favicon();
         ?>
       
         <style>

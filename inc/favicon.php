@@ -1,1 +1,1 @@
-<link rel="icon" type="image/png" href="<?php echo BASE_URL ;?>/assets/images/bar-logo.png">
+<link rel="icon" type="image/png" href="<?php echo BASE_URL ;?>/assets/images/task-planner-1.png">

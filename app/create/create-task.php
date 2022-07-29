@@ -5,7 +5,7 @@ declare(strict_types=1);
 #region Import libraries
 require_once("../../Required.php");
 Required::Logger()
-    ->Database()->DbSession()
+    ->Database()->DbSession()->headerBrand()->applicantHeaderNav()
     ->DataValidator()
     ->Cryptographer()
     ->HttpHeader()
@@ -64,7 +64,7 @@ try {
     <head>
         <title>Create Task || <?= ORGANIZATION_SHORT_NAME ?></title>
         <?php
-        Required::metaTags()->omnicss()->griddle()->bootstrapGrid()->sweetModalCSS()->airDatePickerCSS();
+        Required::metaTags()->omnicss()->griddle()->bootstrapGrid()->sweetModalCSS()->airDatePickerCSS()->favicon();
         ?>
 
       
@@ -91,30 +91,16 @@ try {
     <body>
         <div class="master-wrapper">
             <header class="header">
+                <?php
+                    echo HeaderBrand::prepare(array("baseUrl"=>BASE_URL, "hambMenu"=>true));
+                    echo ApplicantHeaderNav::prepare(array("baseUrl"=>BASE_URL, "role"=>"admin", "sid"=>$encSessionId ));
+                ?>
               
             </header>
 
             <main class="main">
-            <div class="container-fluid flex flex-wrap">
-                
-
-                <nav class="left-nav">
-                        <?php
-                            require_once(ROOT_DIRECTORY . '/inc/AdminLeftNav.php');
-                            echo AdminLeftNav::CreateFor("superadmin", BASE_URL, $encSessionId);
-                        ?>
-                        </nav> 
-
-                  
-
+            <div class="container flex flex-wrap">
                     <div class="content">
-
-                    <div>
-                        <a class="fg-muted flex ai-center jc-end" href="<?= BASE_URL ?>/logout.php?session-id=<?= $encSessionId ?>">
-                            <span class="m-icons">logout</span> Logout
-                        </a>
-                    </div>
-
                         <div class="card">
                             <p class="steps fg-muted">New Task</p>
                             <form action="create-task-processor.php?session-id=<?= $encSessionId ?>" method="post" enctype="multipart/form-data">
