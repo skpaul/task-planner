@@ -1,5 +1,6 @@
 {
     "require": {
-        "nobanno/nobanno": "^0.0.16"
+        "nobanno/nobanno": "^0.0.16",
+        "phpmailer/phpmailer": "^6.6"
     }
 }
