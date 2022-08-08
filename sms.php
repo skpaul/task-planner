@@ -15,7 +15,12 @@ $headers .= 'From: '.$from."\r\n".
             'Reply-To: '.$from."\r\n" .
             'X-Mailer: PHP/' . phpversion();
 
+try {
 mail("skpaul@gmail.com", "Test", "This is body", $headers);
+    
+} catch (\Throwable $th) {
+    echo $th->getMessage();
+}
 
 
 ?>
